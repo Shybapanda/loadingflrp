@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>France Life Roleplay — Chargement</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; overflow:hidden; background:#0b0d14; }
+
+    :root {
+      --blue: #002395;
+      --blue-light: #6b9fff;
+      --red: #ED2939;
+      --red-light: #ff7070;
+      --gold: #f0b84a;
+      --dark: #0b0d14;
+      --dark2: #10131e;
+      --border: rgba(255,255,255,0.07);
+      --text: rgba(255,255,255,0.85);
+      --muted: rgba(255,255,255,0.4);
+    }
+
+    .ls {
+      width:100vw; height:100vh;
+      display:grid;
+      grid-template-rows: 6px 1fr auto;
+      grid-template-columns: 260px 1fr 260px;
+      background: var(--dark);
+      position:relative; overflow:hidden;
+    }
+
+    .ls::before {
+      content:'';
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index:0;
+    }
+    .ls::after {
+      content:'';
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,35,149,0.1) 0%, transparent 70%);
+      z-index:0;
+    }
+
+    .stripe { grid-column:1/-1; display:flex; z-index:10; }
+    .s1{flex:1;background:var(--blue);}
+    .s2{flex:1;background:#dde3f0;}
+    .s3{flex:1;background:var(--red);}
+
+    .panel {
+      position:relative; z-index:2;
+      display:flex; flex-direction:column;
+      padding:24px 18px;
+      border-right:1px solid var(--border);
+      background:rgba(10,12,22,0.55);
+      overflow:hidden;
+    }
+    .panel.right { border-right:none; border-left:1px solid var(--border); }
+
+    .panel-title {
+      font-family:'Syne', sans-serif;
+      font-size:10px; font-weight:700;
+      text-transform:uppercase; letter-spacing:2.5px;
+      color:var(--muted); margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .panel-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* CENTER */
+    .center {
+      grid-column:2; grid-row:2;
+      position:relative; z-index:2;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      gap:16px; padding:28px 20px;
+    }
+
+    /* BAGUETTE */
+    .baguette-scene { width:300px; height:72px; }
+    .baguette-svg { width:300px; height:72px; }
+    @keyframes float {
+      0%,100%{ transform:translateY(0) rotate(-5deg); }
+      50%{ transform:translateY(-8px) rotate(-3deg); }
+    }
+    @keyframes steam1 {
+      0%{ opacity:0; transform:translateY(0) scaleX(1); }
+      50%{ opacity:0.45; }
+      100%{ opacity:0; transform:translateY(-24px) scaleX(1.6); }
+    }
+    @keyframes steam2 {
+      0%{ opacity:0; } 50%{ opacity:0.35; }
+      100%{ opacity:0; transform:translateY(-20px) scaleX(1.4); }
+    }
+    .baguette-g { animation:float 3.2s ease-in-out infinite; transform-origin:150px 44px; }
+    .st1 { animation:steam1 2.4s ease-out infinite; }
+    .st2 { animation:steam2 2.4s ease-out 0.8s infinite; }
+    .st3 { animation:steam1 2.4s ease-out 1.6s infinite; }
+
+    .server-name {
+      font-family:'Syne', sans-serif;
+      font-size:38px; font-weight:800;
+      color:#fff; letter-spacing:-1.5px;
+      text-align:center; line-height:1;
+    }
+    .server-name .bl { color:var(--blue-light); }
+    .server-name .rd { color:var(--red-light); }
+
+    .server-sub {
+      font-size:10px; letter-spacing:3px;
+      text-transform:uppercase; color:var(--muted); font-weight:500;
+    }
+
+    .divider { width:40px; height:1px; background:var(--border); }
+
+    .badge-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+    .badge {
+      font-size:10px; font-weight:600;
+      padding:4px 12px; border-radius:99px; border:1px solid;
+      letter-spacing:0.8px;
+    }
+    .b-blue { background:rgba(0,35,149,0.25); color:var(--blue-light); border-color:rgba(107,159,255,0.25); }
+    .b-red  { background:rgba(237,41,57,0.18); color:var(--red-light); border-color:rgba(237,100,100,0.25); }
+    .b-gold { background:rgba(240,184,74,0.15); color:var(--gold); border-color:rgba(240,184,74,0.25); }
+
+    /* JOBS SCROLL */
+    .jobs-scroll-wrap {
+      width:100%; max-width:340px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--border); border-radius:10px;
+      overflow:hidden;
+    }
+    .jobs-scroll-inner {
+      display:flex; gap:8px; padding:10px 14px;
+      animation:scrolljobs 20s linear infinite;
+      white-space:nowrap;
+    }
+    @keyframes scrolljobs {
+      0%{ transform:translateX(0); }
+      100%{ transform:translateX(-50%); }
+    }
+    .job-chip {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,0.05); border:1px solid var(--border);
+      border-radius:7px; padding:5px 11px;
+      font-size:11px; color:var(--text); white-space:nowrap; flex-shrink:0;
+    }
+
+    /* PROGRESS */
+    .prog-wrap { width:100%; max-width:360px; }
+    .prog-top {
+      display:flex; justify-content:space-between;
+      font-size:11px; color:var(--muted); margin-bottom:7px;
+    }
+    .prog-bg {
+      width:100%; height:6px; background:rgba(255,255,255,0.08);
+      border-radius:99px; overflow:hidden; display:flex;
+    }
+    .prog-seg { height:100%; transition:width 0.3s ease; }
+    .seg-blue  { background:var(--blue); border-radius:99px 0 0 99px; }
+    .seg-white { background:#8899bb; }
+    .seg-red   { background:var(--red); border-radius:0 99px 99px 0; }
+
+    /* FOOTER */
+    .footer-bar {
+      grid-column:1/-1; grid-row:3;
+      position:relative; z-index:3;
+      display:flex; align-items:center; justify-content:center;
+      gap:14px; padding:11px 24px;
+      border-top:1px solid var(--border);
+      background:rgba(6,8,16,0.75);
+      font-size:11px; color:var(--muted);
+    }
+    .dot-sep { width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.12); }
+    .online { display:flex; align-items:center; gap:6px; }
+    .pulse { width:6px; height:6px; border-radius:50%; background:#22c55e; animation:blink 1.5s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* STAFF */
+    .staff-list { display:flex; flex-direction:column; gap:9px; }
+    .staff-card {
+      display:flex; align-items:center; gap:10px;
+      background:rgba(255,255,255,0.03); border:1px solid var(--border);
+      border-radius:10px; padding:9px 11px;
+    }
+    .staff-avatar {
+      width:34px; height:34px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:700; flex-shrink:0;
+      font-family:'Syne', sans-serif;
+    }
+    .av-owner { background:rgba(240,184,74,0.18); color:var(--gold); border:1px solid rgba(240,184,74,0.3); }
+    .av-admin { background:rgba(237,41,57,0.18); color:var(--red-light); border:1px solid rgba(237,100,100,0.3); }
+    .av-modo  { background:rgba(0,35,149,0.25); color:var(--blue-light); border:1px solid rgba(107,159,255,0.3); }
+    .staff-info { flex:1; min-width:0; }
+    .staff-name { font-size:12px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .staff-role { font-size:9px; letter-spacing:0.8px; text-transform:uppercase; margin-top:1px; }
+    .role-owner { color:var(--gold); }
+    .role-admin { color:var(--red-light); }
+    .role-modo  { color:var(--blue-light); }
+    .staff-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .dot-on  { background:#22c55e; }
+    .dot-off { background:#444; }
+
+    /* RULES */
+    .rules-window { flex:1; overflow:hidden; position:relative; }
+    .rules-window::before, .rules-window::after {
+      content:''; position:absolute; left:0; right:0; height:24px; z-index:2; pointer-events:none;
+    }
+    .rules-window::before { top:0; background:linear-gradient(to bottom, rgba(10,12,22,0.95), transparent); }
+    .rules-window::after  { bottom:0; background:linear-gradient(to top, rgba(10,12,22,0.95), transparent); }
+    .rules-scroll {
+      display:flex; flex-direction:column; gap:7px;
+      animation:scrollrules 30s linear infinite;
+    }
+    @keyframes scrollrules {
+      0%{ transform:translateY(0); }
+      100%{ transform:translateY(-50%); }
+    }
+    .rule-item {
+      display:flex; gap:9px; align-items:flex-start;
+      background:rgba(255,255,255,0.03); border:1px solid var(--border);
+      border-radius:8px; padding:8px 10px;
+    }
+    .rule-num {
+      font-family:'Syne', sans-serif; font-size:10px; font-weight:700;
+      color:var(--muted); flex-shrink:0; padding-top:1px; min-width:18px;
+    }
+    .rule-text { font-size:11px; color:rgba(255,255,255,0.6); line-height:1.5; }
+
+    @keyframes fadeUp {
+      from{ opacity:0; transform:translateY(10px); }
+      to  { opacity:1; transform:translateY(0); }
+    }
+    .center > * { animation:fadeUp 0.5s ease both; }
+    .center > *:nth-child(1){ animation-delay:0.05s; }
+    .center > *:nth-child(2){ animation-delay:0.12s; }
+    .center > *:nth-child(3){ animation-delay:0.18s; }
+    .center > *:nth-child(4){ animation-delay:0.24s; }
+    .center > *:nth-child(5){ animation-delay:0.30s; }
+    .center > *:nth-child(6){ animation-delay:0.36s; }
+    .center > *:nth-child(7){ animation-delay:0.42s; }
+  </style>
+</head>
+<body>
+<div class="ls">
+
+  <div class="stripe"><div class="s1"></div><div class="s2"></div><div class="s3"></div></div>
+
+  <!-- PANNEAU GAUCHE — STAFF -->
+  <div class="panel" style="grid-column:1;grid-row:2;">
+    <div class="panel-title">Équipe Staff</div>
+    <div class="staff-list">
+      <div class="staff-card">
+        <div class="staff-avatar av-owner">SB</div>
+        <div class="staff-info">
+          <div class="staff-name">Shybapanda</div>
+          <div class="staff-role role-owner">Fondateur</div>
+        </div>
+        <div class="staff-dot dot-on"></div>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar av-admin">AD</div>
+        <div class="staff-info">
+          <div class="staff-name">Administrateur</div>
+          <div class="staff-role role-admin">Admin</div>
+        </div>
+        <div class="staff-dot dot-on"></div>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar av-admin">AD</div>
+        <div class="staff-info">
+          <div class="staff-name">Administrateur</div>
+          <div class="staff-role role-admin">Admin</div>
+        </div>
+        <div class="staff-dot dot-off"></div>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar av-modo">M1</div>
+        <div class="staff-info">
+          <div class="staff-name">Modérateur</div>
+          <div class="staff-role role-modo">Modérateur</div>
+        </div>
+        <div class="staff-dot dot-on"></div>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar av-modo">M2</div>
+        <div class="staff-info">
+          <div class="staff-name">Modérateur</div>
+          <div class="staff-role role-modo">Modérateur</div>
+        </div>
+        <div class="staff-dot dot-off"></div>
+      </div>
+      <div class="staff-card">
+        <div class="staff-avatar av-modo">M3</div>
+        <div class="staff-info">
+          <div class="staff-name">Modérateur</div>
+          <div class="staff-role role-modo">Modérateur</div>
+        </div>
+        <div class="staff-dot dot-on"></div>
+      </div>
+    </div>
+    <div style="margin-top:auto;padding-top:14px;display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);">
+        <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;"></div> En ligne
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);">
+        <div style="width:6px;height:6px;border-radius:50%;background:#444;"></div> Hors ligne
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTRE -->
+  <div class="center">
+    <div class="baguette-scene">
+      <svg class="baguette-svg" viewBox="0 0 300 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g class="baguette-g">
+          <ellipse class="st1" cx="90"  cy="11" rx="6" ry="8" fill="#d49040" opacity="0"/>
+          <ellipse class="st2" cx="135" cy="8"  rx="5" ry="7" fill="#d49040" opacity="0"/>
+          <ellipse class="st3" cx="178" cy="10" rx="6" ry="8" fill="#d49040" opacity="0"/>
+          <path d="M20 38 Q150 15 280 32 Q288 35 285 40 Q150 58 16 44 Q8 41 20 38Z" fill="#7a3e10"/>
+          <path d="M22 37 Q150 14 278 31 Q285 34 282 38 Q150 55 18 43 Q11 40 22 37Z" fill="#a05a18"/>
+          <path d="M24 35 Q150 13 276 30 Q282 33 279 36 Q150 52 20 41 Q14 38 24 35Z" fill="#c4742a"/>
+          <path d="M27 33 Q150 13 272 28 Q278 31 274 34 Q150 49 23 39 Q17 36 27 33Z" fill="#de8c3a"/>
+          <path d="M32 31 Q150 14 266 27 Q271 29 268 32 Q150 47 28 37 Q22 34 32 31Z" fill="#eca84a"/>
+          <path d="M40 28 Q150 15 258 26 Q262 28 259 30 Q150 44 36 34 Q31 32 40 28Z" fill="#f4b858"/>
+          <path d="M55 25 Q150 17 245 25 Q248 27 244 29 Q150 41 50 31 Q45 28 55 25Z" fill="#fac86a" opacity="0.65"/>
+          <ellipse cx="150" cy="24" rx="95" ry="4.5" fill="#fde090" opacity="0.14"/>
+          <path d="M62 27 Q74 22 80 28"  stroke="#7a3a0e" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M96 22 Q108 17 114 24" stroke="#7a3a0e" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M128 19 Q140 15 147 21" stroke="#7a3a0e" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M162 19 Q174 15 180 22" stroke="#7a3a0e" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M196 21 Q208 17 214 24" stroke="#7a3a0e" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M226 24 Q238 20 244 27" stroke="#7a3a0e" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M20 38 Q11 40 14 45 Q8 42 16 37Z" fill="#7a3e10"/>
+          <path d="M280 32 Q290 34 286 40 Q292 36 283 31Z" fill="#7a3e10"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="server-name"><span class="bl">France</span> Life <span class="rd">Roleplay</span></div>
+    <div class="server-sub">Serveur Roleplay Français — DarkRP</div>
+    <div class="divider"></div>
+
+    <div class="badge-row">
+      <span class="badge b-blue">DarkRP</span>
+      <span class="badge b-gold">Serveur FR</span>
+      <span class="badge b-red">RP Sérieux</span>
+    </div>
+
+    <div class="jobs-scroll-wrap">
+      <div class="jobs-scroll-inner">
+        <div class="job-chip">👮 Police Nationale</div>
+        <div class="job-chip">🚑 SAMU</div>
+        <div class="job-chip">🥖 Boulanger</div>
+        <div class="job-chip">🔫 Gangster</div>
+        <div class="job-chip">💼 Maire</div>
+        <div class="job-chip">🏗️ Constructeur</div>
+        <div class="job-chip">🚒 Pompier</div>
+        <div class="job-chip">🕵️ Agent Secret</div>
+        <div class="job-chip">🛒 Épicier</div>
+        <div class="job-chip">⚖️ Avocat</div>
+        <div class="job-chip">👮 Police Nationale</div>
+        <div class="job-chip">🚑 SAMU</div>
+        <div class="job-chip">🥖 Boulanger</div>
+        <div class="job-chip">🔫 Gangster</div>
+        <div class="job-chip">💼 Maire</div>
+        <div class="job-chip">🏗️ Constructeur</div>
+        <div class="job-chip">🚒 Pompier</div>
+        <div class="job-chip">🕵️ Agent Secret</div>
+        <div class="job-chip">🛒 Épicier</div>
+        <div class="job-chip">⚖️ Avocat</div>
+      </div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-top">
+        <span id="status">Connexion au serveur...</span>
+        <span id="pct">0%</span>
+      </div>
+      <div class="prog-bg">
+        <div class="prog-seg seg-blue"  id="seg-b" style="width:0%"></div>
+        <div class="prog-seg seg-white" id="seg-w" style="width:0%"></div>
+        <div class="prog-seg seg-red"   id="seg-r" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANNEAU DROIT — RÈGLES -->
+  <div class="panel right" style="grid-column:3;grid-row:2;">
+    <div class="panel-title">Règles du serveur</div>
+    <div class="rules-window">
+      <div class="rules-scroll">
+        <div class="rule-item"><div class="rule-num">01</div><div class="rule-text">Respecte tous les joueurs sans exception, en jeu comme hors jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">02</div><div class="rule-text">Reste dans ton personnage à tout moment. Pas de discussions IRL en jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">03</div><div class="rule-text">Pas de RDM — toute action violente doit avoir une raison RP valable.</div></div>
+        <div class="rule-item"><div class="rule-num">04</div><div class="rule-text">Pas de NLR — une fois mort, tu oublies ce qui s'est passé avant.</div></div>
+        <div class="rule-item"><div class="rule-num">05</div><div class="rule-text">Le micro est obligatoire pour les jobs police, SAMU et pompier.</div></div>
+        <div class="rule-item"><div class="rule-num">06</div><div class="rule-text">Interdiction d'abuser des bugs et exploits du jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">07</div><div class="rule-text">Toute décision du staff est finale. Pas de contestation en jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">08</div><div class="rule-text">Interdiction de faire de la pub pour d'autres serveurs.</div></div>
+        <div class="rule-item"><div class="rule-num">09</div><div class="rule-text">Le FailRP est sanctionné. Joue de manière cohérente avec ton rôle.</div></div>
+        <div class="rule-item"><div class="rule-num">10</div><div class="rule-text">Contribue à une bonne ambiance et amuse-toi bien !</div></div>
+        <div class="rule-item"><div class="rule-num">01</div><div class="rule-text">Respecte tous les joueurs sans exception, en jeu comme hors jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">02</div><div class="rule-text">Reste dans ton personnage à tout moment. Pas de discussions IRL en jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">03</div><div class="rule-text">Pas de RDM — toute action violente doit avoir une raison RP valable.</div></div>
+        <div class="rule-item"><div class="rule-num">04</div><div class="rule-text">Pas de NLR — une fois mort, tu oublies ce qui s'est passé avant.</div></div>
+        <div class="rule-item"><div class="rule-num">05</div><div class="rule-text">Le micro est obligatoire pour les jobs police, SAMU et pompier.</div></div>
+        <div class="rule-item"><div class="rule-num">06</div><div class="rule-text">Interdiction d'abuser des bugs et exploits du jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">07</div><div class="rule-text">Toute décision du staff est finale. Pas de contestation en jeu.</div></div>
+        <div class="rule-item"><div class="rule-num">08</div><div class="rule-text">Interdiction de faire de la pub pour d'autres serveurs.</div></div>
+        <div class="rule-item"><div class="rule-num">09</div><div class="rule-text">Le FailRP est sanctionné. Joue de manière cohérente avec ton rôle.</div></div>
+        <div class="rule-item"><div class="rule-num">10</div><div class="rule-text">Contribue à une bonne ambiance et amuse-toi bien !</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <span class="online"><span class="pulse"></span>Serveur en ligne</span>
+    <div class="dot-sep"></div>
+    <span>France Life Roleplay</span>
+    <div class="dot-sep"></div>
+    <span>DarkRP</span>
+    <div class="dot-sep"></div>
+    <span id="footer-status">Chargement...</span>
+  </div>
+
+</div>
+<script>
+  const statuses=["Connexion au serveur...","Chargement de la carte...","Initialisation des jobs...","Chargement des addons...","Synchronisation des données...","Bienvenue sur France Life Roleplay !"];
+  let prog=0;
+  const segB=document.getElementById('seg-b'),segW=document.getElementById('seg-w'),segR=document.getElementById('seg-r');
+  const pct=document.getElementById('pct'),st=document.getElementById('status'),fst=document.getElementById('footer-status');
+  function tick(){
+    if(prog>=100)return;
+    prog=Math.min(100,prog+Math.random()*3+0.8);
+    const p=prog/100;
+    segB.style.width=(Math.min(p,0.333)*300)+'%';
+    segW.style.width=(Math.max(0,Math.min(p-0.333,0.334))*300)+'%';
+    segR.style.width=(Math.max(0,Math.min(p-0.667,0.333))*300)+'%';
+    const r=Math.round(prog);
+    pct.textContent=r+'%';
+    const si=Math.min(statuses.length-1,Math.floor((prog/100)*statuses.length));
+    st.textContent=statuses[si];
+    fst.textContent=r+'% — '+statuses[si];
+    setTimeout(tick,160+Math.random()*260);
+  }
+  tick();
+</script>
+</body>
+</html>
