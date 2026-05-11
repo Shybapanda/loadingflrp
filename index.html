@@ -453,47 +453,157 @@
   tick();
 </script>
 
-  <!-- MUSIQUE DE FOND -->
-  <audio id="bgmusic" loop preload="auto">
+
+
+  <!-- BARRE MUSIQUE BAS -->
+  <style>
+    .mbar {
+      position:fixed; bottom:0; left:0; right:0; z-index:999;
+      height:46px;
+      background:rgba(6,8,16,0.95);
+      border-top:1px solid rgba(255,255,255,0.07);
+      display:flex; align-items:center; gap:12px;
+      padding:0 18px;
+    }
+    .mbar .mic {
+      width:28px; height:28px; border-radius:50%;
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.1);
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; cursor:pointer; flex-shrink:0;
+      transition:all 0.15s; user-select:none;
+    }
+    .mbar .mic:hover { background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.2); }
+    .mbar .mic.red { border-color:rgba(237,41,57,0.4); }
+    .mbar .meq {
+      display:flex; gap:2px; align-items:flex-end; height:16px; flex-shrink:0;
+    }
+    .mbar .meq b {
+      width:3px; border-radius:1px; background:#002395; display:block;
+      animation:meq 0.8s ease-in-out infinite alternate;
+    }
+    .mbar .meq b:nth-child(1){height:5px;animation-delay:0s;}
+    .mbar .meq b:nth-child(2){height:12px;animation-delay:0.12s;}
+    .mbar .meq b:nth-child(3){height:7px;animation-delay:0.28s;}
+    .mbar .meq b:nth-child(4){height:14px;animation-delay:0.08s;}
+    .mbar .meq b:nth-child(5){height:4px;animation-delay:0.22s;}
+    @keyframes meq {
+      from { opacity:0.35; transform:scaleY(0.3); }
+      to   { opacity:1;    transform:scaleY(1); }
+    }
+    .mbar .meq.off b { animation:none !important; height:3px !important; opacity:0.15; }
+    .mbar .mtitle {
+      font-size:11px; color:rgba(255,255,255,0.3);
+      font-family:'Inter',sans-serif; white-space:nowrap; flex-shrink:0;
+    }
+    .mbar .mtitle em { color:rgba(107,159,255,0.65); font-style:normal; }
+    .mbar .mslider {
+      flex:1; display:flex; align-items:center; gap:8px; min-width:0;
+    }
+    .mbar .mslider span { font-size:12px; color:rgba(255,255,255,0.18); flex-shrink:0; }
+    .mbar input[type=range] {
+      -webkit-appearance:none; appearance:none;
+      flex:1; height:3px; border-radius:99px;
+      background:rgba(255,255,255,0.1); outline:none; cursor:pointer;
+    }
+    .mbar input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance:none; appearance:none;
+      width:13px; height:13px; border-radius:50%;
+      background:#002395; border:2px solid #6b9fff; cursor:pointer;
+      transition:transform 0.1s;
+    }
+    .mbar input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.35); }
+    .mbar .mvol {
+      font-size:10px; color:rgba(255,255,255,0.22);
+      font-family:'Inter',sans-serif; min-width:30px; text-align:right; flex-shrink:0;
+    }
+    .mbar .mbadge {
+      font-size:9px; padding:2px 9px; border-radius:99px;
+      background:rgba(0,35,149,0.25); color:rgba(107,159,255,0.65);
+      border:1px solid rgba(107,159,255,0.15);
+      font-family:'Inter',sans-serif; letter-spacing:0.5px; flex-shrink:0;
+    }
+  </style>
+
+  <audio id="bgm" loop preload="auto">
     <source src="flrpload.mp3" type="audio/mpeg">
     <source src="flrpload.ogg" type="audio/ogg">
   </audio>
 
-  <!-- BOUTON MUTE -->
-  <div id="music-btn" onclick="toggleMusic()" style="
-    position:fixed;bottom:18px;right:18px;z-index:999;
-    width:36px;height:36px;border-radius:50%;
-    background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;font-size:16px;transition:all 0.2s;
-    user-select:none;
-  " title="Couper / Activer la musique">🔊</div>
+  <div class="mbar">
+    <div class="mic" id="mbtn-play" onclick="mPlay()" title="Play / Pause">&#9654;</div>
+    <div class="mic" id="mbtn-mute" onclick="mMute()" title="Couper / Activer">&#128266;</div>
+    <div class="meq" id="meq"><b></b><b></b><b></b><b></b><b></b></div>
+    <div class="mtitle">France Life Roleplay &nbsp;&middot;&nbsp; <em>Musique de fond</em></div>
+    <div class="mslider">
+      <span>&#128264;</span>
+      <input type="range" id="mvol-range" min="0" max="100" value="35" oninput="mVol(this.value)"/>
+      <span>&#128266;</span>
+    </div>
+    <div class="mvol" id="mvol-lbl">35%</div>
+    <div class="mbadge">&#127925; Live</div>
+  </div>
 
   <script>
-    var music = document.getElementById('bgmusic');
-    var btn   = document.getElementById('music-btn');
-    var muted = false;
+    var bgm      = document.getElementById('bgm');
+    var btnPlay  = document.getElementById('mbtn-play');
+    var btnMute  = document.getElementById('mbtn-mute');
+    var eq       = document.getElementById('meq');
+    var volRange = document.getElementById('mvol-range');
+    var volLbl   = document.getElementById('mvol-lbl');
+    var isPlay   = false;
+    var isMuted  = false;
 
-    music.volume = 0.35;
+    bgm.volume = 0.35;
 
-    // Lecture auto au premier clic ou interaction
-    function tryPlay() {
-      music.play().catch(function() {});
+    function mStart() {
+      bgm.play().then(function() {
+        isPlay = true;
+        btnPlay.innerHTML = '&#9646;&#9646;';
+        eq.classList.remove('off');
+      }).catch(function() {});
     }
-    document.addEventListener('click', tryPlay, { once: true });
-    document.addEventListener('keydown', tryPlay, { once: true });
 
-    // Tentative directe (certains navigateurs l'autorisent)
-    window.addEventListener('load', function() {
-      music.play().catch(function() {});
-    });
+    window.addEventListener('load', function() { mStart(); });
+    document.addEventListener('click', function() { if (!isPlay) mStart(); }, { once: true });
 
-    function toggleMusic() {
-      muted = !muted;
-      music.muted = muted;
-      btn.textContent = muted ? '🔇' : '🔊';
-      btn.style.borderColor = muted ? 'rgba(237,41,57,0.4)' : 'rgba(255,255,255,0.15)';
+    function mPlay() {
+      if (bgm.paused) {
+        bgm.play();
+        isPlay = true;
+        btnPlay.innerHTML = '&#9646;&#9646;';
+        eq.classList.remove('off');
+      } else {
+        bgm.pause();
+        isPlay = false;
+        btnPlay.innerHTML = '&#9654;';
+        eq.classList.add('off');
+      }
+    }
+
+    function mMute() {
+      isMuted = !isMuted;
+      bgm.muted = isMuted;
+      btnMute.innerHTML = isMuted ? '&#128263;' : '&#128266;';
+      if (isMuted) {
+        btnMute.classList.add('red');
+        eq.classList.add('off');
+      } else {
+        btnMute.classList.remove('red');
+        if (isPlay) eq.classList.remove('off');
+      }
+    }
+
+    function mVol(v) {
+      bgm.volume = v / 100;
+      bgm.muted  = (v == 0);
+      isMuted    = (v == 0);
+      btnMute.innerHTML = (v == 0) ? '&#128263;' : '&#128266;';
+      if (v == 0) { btnMute.classList.add('red'); eq.classList.add('off'); }
+      else        { btnMute.classList.remove('red'); if (isPlay) eq.classList.remove('off'); }
+      volLbl.textContent = v + '%';
     }
   </script>
+
 </body>
 </html>
