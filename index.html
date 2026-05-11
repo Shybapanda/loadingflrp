@@ -256,49 +256,49 @@
     <div class="panel-title">Équipe Staff</div>
     <div class="staff-list">
       <div class="staff-card">
-        <div class="staff-avatar av-owner">F</div>
+        <div class="staff-avatar av-owner">SB</div>
         <div class="staff-info">
-          <div class="staff-name">Panda</div>
+          <div class="staff-name">Shybapanda</div>
           <div class="staff-role role-owner">Fondateur</div>
         </div>
         <div class="staff-dot dot-on"></div>
       </div>
       <div class="staff-card">
-        <div class="staff-avatar av-admin">f</div>
+        <div class="staff-avatar av-admin">AD</div>
         <div class="staff-info">
-          <div class="staff-name">Anoxis</div>
-          <div class="staff-role role-admin">Fondateur</div>
+          <div class="staff-name">Administrateur</div>
+          <div class="staff-role role-admin">Admin</div>
         </div>
         <div class="staff-dot dot-on"></div>
       </div>
       <div class="staff-card">
-        <div class="staff-avatar av-admin">A</div>
+        <div class="staff-avatar av-admin">AD</div>
         <div class="staff-info">
-          <div class="staff-name">SOON</div>
+          <div class="staff-name">Administrateur</div>
           <div class="staff-role role-admin">Admin</div>
         </div>
         <div class="staff-dot dot-off"></div>
       </div>
       <div class="staff-card">
-        <div class="staff-avatar av-modo">M</div>
+        <div class="staff-avatar av-modo">M1</div>
         <div class="staff-info">
-          <div class="staff-name">SOON</div>
+          <div class="staff-name">Modérateur</div>
           <div class="staff-role role-modo">Modérateur</div>
         </div>
         <div class="staff-dot dot-on"></div>
       </div>
       <div class="staff-card">
-        <div class="staff-avatar av-modo">M</div>
+        <div class="staff-avatar av-modo">M2</div>
         <div class="staff-info">
-          <div class="staff-name">SOON</div>
+          <div class="staff-name">Modérateur</div>
           <div class="staff-role role-modo">Modérateur</div>
         </div>
         <div class="staff-dot dot-off"></div>
       </div>
       <div class="staff-card">
-        <div class="staff-avatar av-modo">M</div>
+        <div class="staff-avatar av-modo">M3</div>
         <div class="staff-info">
-          <div class="staff-name">SOON</div>
+          <div class="staff-name">Modérateur</div>
           <div class="staff-role role-modo">Modérateur</div>
         </div>
         <div class="staff-dot dot-on"></div>
@@ -452,5 +452,48 @@
   }
   tick();
 </script>
+
+  <!-- MUSIQUE DE FOND -->
+  <audio id="bgmusic" loop preload="auto">
+    <source src="flrpload.mp3" type="audio/mpeg">
+    <source src="flrpload.ogg" type="audio/ogg">
+  </audio>
+
+  <!-- BOUTON MUTE -->
+  <div id="music-btn" onclick="toggleMusic()" style="
+    position:fixed;bottom:18px;right:18px;z-index:999;
+    width:36px;height:36px;border-radius:50%;
+    background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:16px;transition:all 0.2s;
+    user-select:none;
+  " title="Couper / Activer la musique">🔊</div>
+
+  <script>
+    var music = document.getElementById('bgmusic');
+    var btn   = document.getElementById('music-btn');
+    var muted = false;
+
+    music.volume = 0.35;
+
+    // Lecture auto au premier clic ou interaction
+    function tryPlay() {
+      music.play().catch(function() {});
+    }
+    document.addEventListener('click', tryPlay, { once: true });
+    document.addEventListener('keydown', tryPlay, { once: true });
+
+    // Tentative directe (certains navigateurs l'autorisent)
+    window.addEventListener('load', function() {
+      music.play().catch(function() {});
+    });
+
+    function toggleMusic() {
+      muted = !muted;
+      music.muted = muted;
+      btn.textContent = muted ? '🔇' : '🔊';
+      btn.style.borderColor = muted ? 'rgba(237,41,57,0.4)' : 'rgba(255,255,255,0.15)';
+    }
+  </script>
 </body>
 </html>
